@@ -14,6 +14,9 @@ export const startRedis = () => {
 		process.exit(1);
 	})
 
+
+
+
 	const sendMsg = (msg) => {
 		client.publish(channel, JSON.stringify({
 			msg
