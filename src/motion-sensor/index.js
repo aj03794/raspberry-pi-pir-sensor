@@ -1,14 +1,17 @@
-let motion = false
+import raspi from 'raspi-io'
+import five from 'johnny-five'
 
 export const monitorMotionSensor = ({ sendMsg }) => {
-	setInterval(() => {
-		motion = !motion
-		if(motion) {
-			console.log('Motion true', motion)
-			return sendMsg({ motion: true })
-		} else {
-			console.log('Motion false', motion)
-			return sendMsg({ motion: false })
-		}
-	}, 5000)
+	const board = new five.Board({
+		io: new raspi()
+	})
+
+	board.on('ready', () => {
+		console.log('Board is ready')
+		const motion = new five.Motion('P1-7')
+		motion.on('motionstart', () => {
+			console.log('Motion detected')
+			sendMsg({ motion: true })
+		})
+	})
 }
