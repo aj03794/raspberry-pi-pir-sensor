@@ -1,4 +1,7 @@
 import { createClient } from 'redis'
+import { platform } from 'os'
+
+console.log('platform', platform())
 
 export const startRedis = () => {
 	console.log('Initiating redis connection')
