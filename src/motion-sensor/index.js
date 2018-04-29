@@ -1,6 +1,7 @@
-import five from 'johnny-five'
+// import five from 'johnny-five'
 
 const raspi = require('../../package.json')['raspi-io']
+const five = require('../../package.json')['johnny-five']
 
 export const monitorMotionSensor = ({ raspi, sendMsg }) => {
 	return raspi
