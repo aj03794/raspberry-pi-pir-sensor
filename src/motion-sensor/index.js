@@ -1,5 +1,4 @@
-const raspi = require('../../package.json')['raspi-io']
-const five = require('../../package.json')['johnny-five']
+const five = require('johnny-five')
 
 export const monitorMotionSensor = ({ raspi, sendMsg }) => {
 	return raspi

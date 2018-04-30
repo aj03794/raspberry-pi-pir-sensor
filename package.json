@@ -23,10 +23,12 @@
         ]
     },
     "dependencies": {
+        "johnny-five": "^0.14.3",
         "npm-platform-dependencies": "^0.1.0",
+        "raspi-io": "^9.0.0",
         "redis": "^2.8.0"
     },
-    "freeBsdDependencies": {
+    "linuxDependencies": {
         "johnny-five": "^0.14.3",
         "raspi-io": "^9.0.0"
     }
