@@ -1,12 +1,18 @@
-const five = require('johnny-five')
+// const five = require('johnny-five')
 
-export const monitorMotionSensor = ({ raspi, sendMsg }) => {
+export const monitorMotionSensor = ({
+	raspi,
+	sendMsg,
+	five
+}) => {
 	return raspi
-	? realMotionSensor({ raspi, sendMsg })
+	? realMotionSensor({ raspi, five, sendMsg })
 	: fakeMotionSensor({ sendMsg })
 }
 
 const realMotionSensor = ({ raspi, sendMsg }) => {
+	raspi = require('raspi-io')
+	five = require('johnny-five')
 	const board = new five.Board({
 		io: new raspi()
 	})

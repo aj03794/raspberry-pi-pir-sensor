@@ -1,8 +1,4 @@
 import { createClient } from 'redis'
-import { platform } from 'os'
-
-console.log('platform', platform())
-let attempt = 0
 
 export const startRedis = () => {
 	console.log('Initiating redis connection')
@@ -33,20 +29,6 @@ export const startRedis = () => {
 
 	client.on('error', error => {
 		console.log('ERROR OCCURRED', error)
-		// console.log('client', client)
-		// let attempts = 0
-		// const options = {
-		// 	error,
-		// 	total_retry_time: 0,
-		// 	attempt: attempt++
-		// }
-		// console.log('options before', options)
-		// client.options.retryStrategy(options)
-		// console.log(retryStrategy)
-		// setInterval(() => {
-		// 	console.log('Connection to redis: failure', err)
-		// }, 5000)
-		// process.exit(1);
 	})
 
 
