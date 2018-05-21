@@ -1,19 +1,22 @@
-import { startRedis } from './redis'
 import { monitorMotionSensor } from './motion-sensor'
 import { platform } from 'os'
+import { redis } from './redis'
 
 console.log('platform', platform())
+
+const { publish, subscribe } = redis()
+
+// console.log('publish', publish)
 
 const raspi = require('../package.json').dependencies['raspi-io']
 const five = require('../package.json').dependencies['johnny-five']
 
-// console.log('aasdfadf', require('../package.json'))
+console.log('raspi', raspi)
+console.log('five', five)
 
-// console.log('raspi', raspi ? true : false)
-
-const { sendMsg } = startRedis()
 monitorMotionSensor({
 	raspi,
 	five,
-	sendMsg
+	publish,
+	subscribe
 })

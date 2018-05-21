@@ -2,15 +2,16 @@
 
 export const monitorMotionSensor = ({
 	raspi,
-	sendMsg,
-	five
+	five,
+	publish,
+	subscribe
 }) => {
 	return raspi
-	? realMotionSensor({ raspi, five, sendMsg })
-	: fakeMotionSensor({ sendMsg })
+	? realMotionSensor({ raspi, five, publish, subscribe })
+	: fakeMotionSensor({ publish, subscribe })
 }
 
-const realMotionSensor = ({ raspi, five, sendMsg }) => {
+const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
 	raspi = require('raspi-io')
 	five = require('johnny-five')
 	const board = new five.Board({
@@ -22,18 +23,51 @@ const realMotionSensor = ({ raspi, five, sendMsg }) => {
 		const motion = new five.Motion('P1-7')
 		motion.on('motionstart', () => {
 			console.log('Motion detected')
-			sendMsg({
-				motion: true
+			publish()
+			.then(({ connect }) => connect())
+			.then(({ send }) => {
+
+				send({
+				channel: 'motion sensor',
+				data: {
+					motion: true
+				}
 			})
+
+			send({
+				channel: 'slack',
+				data: {
+					motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
+					text: 'Motion detected at'
+				}
+			})
+		})
 		})
 	})
 }
 
-const fakeMotionSensor = ({ sendMsg }) => {
+const fakeMotionSensor = ({ publish, subscribe }) => {
 	setInterval(() => {
 		console.log('Fake motion detected')
-		sendMsg({
-			motion: true
+		const date = new Date()
+		publish()
+		.then(({ connect }) => connect())
+		.then(({ send }) => {
+
+			send({
+			channel: 'motion sensor',
+			data: {
+				motion: true
+			}
 		})
+
+		send({
+			channel: 'slack',
+			data: {
+				motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
+				text: 'Motion detected at'
+			}
+		})
+	})
 	}, 5000)
 }
