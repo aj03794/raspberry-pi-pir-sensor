@@ -1,27 +1,13 @@
-// Basically have listeners, publishers, and actions
-// Need some sort of naming convention
-
 import { createClient } from 'redis'
 import { createSubject } from 'create-subject-with-filter'
-
-const providerConfigParams = {
-	getPortParams: []
-}
-
-// {
-// 	channel,
-// 	providerConfig: {
-// 		pubsub: {
-// 			getPort
-// 		}
-// 	}
-// }
 
 const clients = {} // inject this to manage scope
 
 const getClient = ({ type }) => ({
 	connect: () => new Promise(resolve => {
+		// console.log('------>', clients)
 		if (!clients[type]) {
+			console.log('Creating new client')
 			setClient({
 				type,
 				client: createClient({
@@ -48,7 +34,7 @@ const getClient = ({ type }) => ({
 	})
 })
 
-const setClient = ({ type, client }) =>  clients[type] = client
+const setClient = ({ type, client }) => clients[type] = client
 
 export const redis = () => ({
 	publish: () => new Promise((resolve, reject) => {
@@ -91,13 +77,12 @@ export const redis = () => ({
 						console.log('Connected to Redis')
 						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
 						client.on('message', (...args) => {
-							// console.log('args', args)
 							next({
 								meta: {
 									type: 'message',
 									timestamp: new Date().getTime()
 								},
-								data: args //sanitize anything provider specific (redis)
+								data: args
 							})
 						})
 						client.on('error', (...args) => {
@@ -106,16 +91,15 @@ export const redis = () => ({
 								meta: {
 									type: 'error',
 									timestamp: new Date().getTime(),
-									data: args //sanitize anything provider specific (redis)
+									data: args 
 								}
 							})
 						})
-						// console.log('asdfda connection')
 						next({
 							meta: {
 								type: 'connect',
 								timestamp: new Date().getTime(),
-								data: args //sanitize anything provider specific (redis)
+								data: args
 							}
 						})
 					})
@@ -126,15 +110,4 @@ export const redis = () => ({
 				})
 		})
 	})
-})
-
-
-export const doRedisReconnect = ({ err, delay }) => new Promise((resolve, reject) => {
-	// let attempts = 0
-	// if ()
-	// console.log('HELLO')
-	setTimeout(() => {
-		console.log('Attempting to reconnect')
-		resolve({ err })
-	}, 5000)
 })
