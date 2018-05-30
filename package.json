@@ -8,6 +8,8 @@
         "build": "webpack",
         "start": "npm run build && sudo node dist/bundle.js",
         "start-dev": "npm run build && node dist/bundle.js",
+        "version-patch": "npm version patch",
+        "postversion": "git push",
         "postinstall": "npmpd"
     },
     "keywords": [],
