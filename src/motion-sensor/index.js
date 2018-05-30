@@ -12,8 +12,12 @@ export const monitorMotionSensor = ({
 }
 
 const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
-	raspi = require('raspi-io')
-	five = require('johnny-five')
+	// Had to do this try/catch block specifically for webpack
+	try {
+		raspi = require('raspi-io')
+		five = require('johnny-five')
+	}
+	catch (e) {}
 	const board = new five.Board({
 		io: new raspi()
 	})
@@ -55,19 +59,21 @@ const fakeMotionSensor = ({ publish, subscribe }) => {
 		.then(({ send }) => {
 
 			send({
-			channel: 'motion sensor',
-			data: {
-				motion: true
-			}
-		})
+				channel: 'motion sensor',
+				data: {
+					motion: true
+				}
+			})
 
-		send({
-			channel: 'slack',
-			data: {
-				motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
-				text: 'Motion detected at'
-			}
-		})
+			send({
+				channel: 'slack',
+				data: {
+					motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
+					text: 'Motion detected at'
+				}
+			})
+
+
 	})
-	}, 5000)
+}, 1000)
 }

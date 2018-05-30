@@ -11,8 +11,8 @@ const { publish, subscribe } = redis()
 const raspi = require('../package.json').dependencies['raspi-io']
 const five = require('../package.json').dependencies['johnny-five']
 
-console.log('raspi', raspi)
-console.log('five', five)
+// console.log('raspi', raspi)
+// console.log('five', five)
 
 monitorMotionSensor({
 	raspi,
