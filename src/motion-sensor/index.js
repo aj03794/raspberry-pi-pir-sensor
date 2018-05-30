@@ -12,8 +12,12 @@ export const monitorMotionSensor = ({
 }
 
 const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
-	raspi = require('raspi-io')
-	five = require('johnny-five')
+	// Had to do this try/catch block specifically for webpack
+	try {
+		raspi = require('raspi-io')
+		five = require('johnny-five')
+	}
+	catch (e) {}
 	const board = new five.Board({
 		io: new raspi()
 	})

@@ -7,12 +7,17 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js',
+    },
+    resolve: {
+		alias: {
+			'hiredis': path.join(__dirname, 'aliases/hiredis.js')
+		}
 	},
 	plugins: [
 		new webpack.optimize.LimitChunkCountPlugin({
 			maxChunks: 1,
 		}),
-		new CleanWebpackPlugin(['./dist']),
+		new CleanWebpackPlugin(['./dist'])
 	],
 	module: {
 		'rules': [
@@ -34,4 +39,5 @@ module.exports = {
 	node: {
 		__dirname: false,
 		__filename: false
-	}
+    }
+}
