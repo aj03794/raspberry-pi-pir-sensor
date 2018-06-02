@@ -1,4 +1,8 @@
 // const five = require('johnny-five')
+import dateTime from 'date-time'
+
+const timestamp = () => dateTime({ local: true, showMilliseconds: true })
+console.log('TIMESTAMP', timestamp())
 
 export const monitorMotionSensor = ({
 	raspi,
@@ -41,8 +45,7 @@ const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
 			send({
 				channel: 'slack',
 				data: {
-					motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
-					text: 'Motion detected at'
+					motionDetected: timestamp(),
 				}
 			})
 		})
@@ -68,8 +71,12 @@ const fakeMotionSensor = ({ publish, subscribe }) => {
 			send({
 				channel: 'slack',
 				data: {
-					motionDetected: `${date.getMonth()}-${date.getDate()}-${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}`,
-					text: 'Motion detected at'
+					slackData: {
+						channel: 'motion-sensor',
+						msg: {
+							motionDetected: timestamp()
+						}
+					}
 				}
 			})
 

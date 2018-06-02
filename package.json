@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "create-subject-with-filter": "0.0.5",
+        "date-time": "^2.1.0",
         "npm-platform-dependencies": "^0.1.0",
         "redis": "^2.8.0"
     },
