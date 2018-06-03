@@ -6,7 +6,7 @@
     "scripts": {
         "test": "exit 0",
         "build-webpack": "webpack",
-        "build-babel": "babel src --out-dir dist",
+        "build-babel": "rm -rf dist && babel src --out-dir dist",
         "start-webpack": "npm run build-webpack && sudo node dist/bundle.js",
         "start-babel": "npm run build-babel && sudo node dist/index.js",
         "start-dev-webpack": "npm run build-webpack && node dist/bundle.js",
