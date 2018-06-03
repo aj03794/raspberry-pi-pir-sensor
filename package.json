@@ -5,9 +5,12 @@
     "main": "index.js",
     "scripts": {
         "test": "exit 0",
-        "build": "webpack",
-        "start": "npm run build && sudo node dist/bundle.js",
-        "start-dev": "npm run build && node dist/bundle.js",
+        "build-webpack": "webpack",
+        "build-babel": "babel src --out-dir dist",
+        "start-webpack": "npm run build-webpack && sudo node dist/bundle.js",
+        "start-babel": "npm run build-babel && sudo node dist/index.js",
+        "start-dev-webpack": "npm run build-webpack && node dist/bundle.js",
+        "start-dev-babel": "npm run build-babel && node dist/index.js",
         "version-patch": "node ./scripts/git-commit.js && npm version patch",
         "postversion": "git push",
         "postinstall": "npmpd"
@@ -18,23 +21,25 @@
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "babel-loader": "^7.1.4",
+        "babel-plugin-dynamic-import-node": "^1.2.0",
+        "babel-plugin-syntax-dynamic-import": "^6.18.0",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-polyfill": "^6.26.0",
         "babel-preset-env": "^1.6.1",
         "clean-webpack-plugin": "^0.1.19",
         "webpack": "^4.10.1",
         "webpack-cli": "^2.1.4"
     },
+    "dependencies": {
+        "create-subject-with-filter": "0.0.5",
+        "date-time": "^2.1.0",
+        "npm-platform-dependencies": "^0.1.0",
+        "redis": "^2.8.0"
+    },
     "babel": {
         "presets": [
             "env"
         ]
-    },
-    "dependencies": {
-        "create-subject-with-filter": "0.0.5",
-        "date-time": "^2.1.0",
-        "johnny-five": "^0.14.3",
-        "npm-platform-dependencies": "^0.1.0",
-        "raspi-io": "^9.0.0",
-        "redis": "^2.8.0"
     },
     "linuxDependencies": {
         "johnny-five": "^0.14.3",

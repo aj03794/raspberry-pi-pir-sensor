@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
-	entry: './src/index',
+	entry: ['babel-polyfill', './src/index'],
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js',
@@ -28,6 +28,11 @@ module.exports = {
 				'options': {
 					'presets': [
 						'env'
+					],
+					'plugins': [
+						require('babel-plugin-dynamic-import-node'),
+						require('babel-plugin-syntax-dynamic-import'),
+						require('babel-plugin-transform-object-rest-spread')
 					],
 					babelrc: false,
 					compact: false
