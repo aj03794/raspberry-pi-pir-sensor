@@ -8,11 +8,12 @@ export const monitorMotionSensor = ({
 	raspi,
 	five,
 	publish,
-	subscribe
+    subscribe,
+    slack
 }) => {
 	return raspi
-	? realMotionSensor({ raspi, five, publish, subscribe })
-	: fakeMotionSensor({ publish, subscribe })
+	? realMotionSensor({ raspi, five, publish, subscribe, slack })
+	: fakeMotionSensor({ publish, subscribe, slack })
 }
 
 const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
@@ -38,10 +39,10 @@ const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
                 }
             })
 
-            send({
-                channel: 'slack',
-                data: {
-                    motionDetected: timestamp(),
+            slack({
+                slackMsg: {
+                    msg: 'Real motion detected',
+                    timestamp: timestamp()
                 }
             })
         })
@@ -49,7 +50,7 @@ const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
     })
 }
 
-const fakeMotionSensor = ({ publish, subscribe }) => {
+const fakeMotionSensor = ({ publish, subscribe, slack }) => {
 	setInterval(() => {
 		console.log('Fake motion detected')
 		const date = new Date()
@@ -64,17 +65,12 @@ const fakeMotionSensor = ({ publish, subscribe }) => {
 				}
 			})
 
-			send({
-				channel: 'slack',
-				data: {
-					slackData: {
-						channel: 'motion-sensor',
-						msg: {
-							motionDetected: timestamp()
-						}
-					}
-				}
-			})
+            slack({
+                slackMsg: {
+                    msg: 'Fake motion detected',
+                    timestamp: timestamp()
+                }
+            })
 
 
 	})
