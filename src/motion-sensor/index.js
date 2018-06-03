@@ -16,7 +16,7 @@ export const monitorMotionSensor = ({
 	: fakeMotionSensor({ publish, subscribe, slack })
 }
 
-const realMotionSensor = ({ raspi, five, publish, subscribe }) => {
+const realMotionSensor = ({ raspi, five, publish, subscribe, slack }) => {
     console.log('realMotionSensor')
     raspi = require('raspi-io')
     five = require('johnny-five')
