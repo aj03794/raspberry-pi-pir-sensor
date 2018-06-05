@@ -1,5 +1,6 @@
-import { createClient } from 'redis'
+import { createClient, ReplyError } from 'redis'
 import { createSubject } from 'create-subject-with-filter'
+import { readlinkSync } from 'fs';
 
 const clients = {} // inject this to manage scope
 
@@ -26,7 +27,9 @@ const getClient = ({ type }) => ({
 						return Math.min(options.attempt * 100, 5000);
 					},
 					host: process.env.IP_ADDRESS,
-					port: 6379
+					port: 6379,
+					command_queue_length: 2,
+					reply: 'OFF'
 				})
 			})
 		}
@@ -45,10 +48,18 @@ export const redis = () => ({
 					channel,
 					data
 				}) => new Promise(resolve => {
-					client.on('error', (...args) => {
-						console.log('publish - error', args)
-					})
-					client.publish(channel, JSON.stringify(data))
+					console.log('=====>', client.command_queue_length)
+					// console.log('ReplyError', ReplyError)
+					// client.on('error', (...args) => {
+					// 	console.log('----->', args)
+					// 	console.log('publish - error', args)
+					// })
+					// client.publish()
+					console.log('-----------------')
+					// console.log(client)
+					data = JSON.stringify(data)
+					client.publish(channel, data)
+
 					return resolve({
 						meta: {
 							type: 'published',
@@ -59,55 +70,56 @@ export const redis = () => ({
 			}))
 		})
 	}),
-	subscribe: ({ channel }) => new Promise(resolve => {
-		const c = getClient({ type: channel })
-		return resolve({
-			connect: () => c.connect()
-				.then(client => {
-					const {
-						subscribe: allMsgs,
-						filter: filterMsgs,
-						next
-					} = createSubject()
-					client.subscribe(channel)
-					client.on('error', (...args) => {
-						console.log('subscribe - error', args)
-					})
-					client.on('connect', (...args) => {
-						console.log('Connected to Redis')
-						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
-						client.on('message', (...args) => {
-							next({
-								meta: {
-									type: 'message',
-									timestamp: new Date().getTime()
-								},
-								data: args
-							})
-						})
-						client.on('error', (...args) => {
-							console.log('ERROR OCCURRED', error)
-							next({
-								meta: {
-									type: 'error',
-									timestamp: new Date().getTime(),
-									data: args 
-								}
-							})
-						})
-						next({
-							meta: {
-								type: 'connect',
-								timestamp: new Date().getTime(),
-								data: args
-							}
-						})
-					})
-					return {
-						allMsgs,
-						filterMsgs
-					}
-				})
-		})
-	})
+	// subscribe: ({ channel }) => new Promise(resolve => {
+	// 	const c = getClient({ type: channel })
+	// 	return resolve({
+	// 		connect: () => c.connect()
+	// 			.then(client => {
+
+	// 				const {
+	// 					subscribe: allMsgs,
+	// 					filter: filterMsgs,
+	// 					next
+	// 				} = createSubject()
+	// 				client.subscribe(channel)
+	// 				client.on('error', (...args) => {
+	// 					console.log('subscribe - error', args)
+	// 				})
+	// 				client.on('connect', (...args) => {
+	// 					console.log('Connected to Redis')
+	// 					// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
+	// 					client.on('message', (...args) => {
+	// 						next({
+	// 							meta: {
+	// 								type: 'message',
+	// 								timestamp: new Date().getTime()
+	// 							},
+	// 							data: args
+	// 						})
+	// 					})
+	// 					client.on('error', (...args) => {
+	// 						console.log('ERROR OCCURRED', error)
+	// 						next({
+	// 							meta: {
+	// 								type: 'error',
+	// 								timestamp: new Date().getTime(),
+	// 								data: args 
+	// 							}
+	// 						})
+	// 					})
+	// 					next({
+	// 						meta: {
+	// 							type: 'connect',
+	// 							timestamp: new Date().getTime(),
+	// 							data: args
+	// 						}
+	// 					})
+	// 				})
+	// 				return {
+	// 					allMsgs,
+	// 					filterMsgs
+	// 				}
+	// 			})
+	// 	})
+	// })
 })

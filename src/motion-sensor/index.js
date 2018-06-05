@@ -53,11 +53,11 @@ const realMotionSensor = ({ raspi, five, publish, subscribe, slack }) => {
 const fakeMotionSensor = ({ publish, subscribe, slack }) => {
 	setInterval(() => {
 		console.log('Fake motion detected')
-		const date = new Date()
+        const date = new Date()
 		publish()
 		.then(({ connect }) => connect())
 		.then(({ send }) => {
-
+            
 			send({
 				channel: 'motion sensor',
 				data: {
@@ -74,5 +74,5 @@ const fakeMotionSensor = ({ publish, subscribe, slack }) => {
 
 
 	})
-}, 1000)
+}, 100)
 }
