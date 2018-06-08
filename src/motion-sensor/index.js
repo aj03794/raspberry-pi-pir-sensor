@@ -28,25 +28,18 @@ const realMotionSensor = ({ raspi, five, publish, subscribe, slack }) => {
         const motion = new five.Motion('P1-7')
         motion.on('motionstart', () => {
             console.log('Motion detected')
-            publish()
-            .then(({ connect }) => connect())
-            .then(({ send }) => {
-
-            send({
+            publish({
                 channel: 'motion sensor',
                 data: {
                     motion: true
                 }
             })
-
-                slack({
-                    slackMsg: {
-                        msg: 'Real motion detected',
-                        timestamp: timestamp()
-                    }
-                })
-                
-            })
+            slack({
+                slackMsg: {
+                    msg: 'Real motion detected',
+                    timestamp: timestamp()
+                }
+            })     
         })
     })
 }
@@ -61,12 +54,11 @@ const fakeMotionSensor = ({ publish, subscribe, slack }) => {
                 motion: true
             }
         })
-
         slack({
             slackMsg: {
                 msg: 'Fake motion detected',
                 timestamp: timestamp()
             }
         })
-    }, 1000)
+    }, 1500)
 }
